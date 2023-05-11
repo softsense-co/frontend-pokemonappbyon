@@ -9,15 +9,15 @@ const Hero = () => {
       <div className="mask">
         <img className="into-img" src={IntroImg} alt="IntroImg" />
       </div>
-      <div className="content">
+      <div className="content ">
         <p>POKEMON</p>
         <h1>Pokemon Go</h1>
         <div>
-          <Link to="/project" className="btn">
-            Project
+          <Link to="/project" className="btn rounded-full">
+            Pokemon
           </Link>
-          <Link to="/about" className="btn">
-            About
+          <Link to="/about" className="btn rounded-full">
+            My Pokemon
           </Link>
         </div>
       </div>

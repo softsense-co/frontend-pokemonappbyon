@@ -1,14 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Outfit', sans-serif;
-}
 
 body {
-    background: #C1D0B5;
+    background: linear-gradient(79deg, #0EA293, #B9EDDD , #0EA293);
 }
 
 h1, h4, p,
@@ -25,20 +21,15 @@ ul {
     padding: 12px 32px;
     font-size: 1rem;
     text-transform: uppercase;
-    background: #83764F;
-    color: black;
-    border: 1px solid #E5F9DB;
+    background: transparent;
+    color: #A4BC92(151, 3, 3);
+    border: 1px solid black;
     font-weight: 600;
     cursor: pointer;
+    background-color: #A4BC92;
+    transition: color 0.3s ease;
 }
 
-.btn-light {
-    background: transparent;
-    color: #E5F9DB;
-}
-
-.btn-hover {
-    background: #C07F00;
-    color: #E5F9DB;
-    transition: 0.3s;
+.btn:hover {
+    color: rgb(145, 8, 8);
 }
