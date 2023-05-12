@@ -36,6 +36,9 @@ const Navbar = () => {
         <li>
           <Link to="/about">My Pokemon</Link>
         </li>
+        <li>
+          <Link to="/login" >Login</Link>
+        </li>
       </ul>
       <div className="poke" onClick={handleClick}>
         {click ? (

@@ -67,24 +67,24 @@ function MyPoke() {
         {myPoke.length > 0 &&
           myPoke.map((poke) => (
             <div className="flex justify-center" key={poke.id}>
-              <div className="card w-96 bg-base-100 shadow-xl rounded-lg p-4">
+              <div className="card w-96 shadow-xl rounded-lg p-4">
                 <div className="card p-9 rounded-lg shadow-xl">
                   <img
                     src={poke.image}
                     alt=""
-                    className="rounded-t-lg mt-2 mb-2"
+                    className="rounded-t-lg mt-2 mb-2 text-black"
                   />
                 </div>
                 <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">{poke.name}</h2>
+                  <h2 className="text-xl font-semibold mb-2 text-black">{poke.name}</h2>
                   <div className="flex justify-between items-center mb-4">
-                    <p className="text-gray-600">Price:</p>
+                    <p className="text-gray-600 ">Price:</p>
                     <p className="text-gray-800">{poke.price}</p>
                   </div>
                   <div className="flex justify-center">
                     <button
                       onClick={() => deletePokemon(poke)}
-                      className="btn rounded-full"
+                      className="btn rounded-full text-black"
                     >
                       Delete Pokemon
                     </button>

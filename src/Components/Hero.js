@@ -9,14 +9,14 @@ const Hero = () => {
       <div className="mask">
         <img className="into-img" src={IntroImg} alt="IntroImg" />
       </div>
-      <div className="content ">
+      <div className="content  ">
         <p>POKEMON</p>
         <h1>Pokemon Go</h1>
         <div>
-          <Link to="/project" className="btn rounded-full">
+          <Link to="/project" className="btn rounded-full text-black">
             Pokemon
           </Link>
-          <Link to="/about" className="btn rounded-full">
+          <Link to="/about" className="btn rounded-full text-black">
             My Pokemon
           </Link>
         </div>

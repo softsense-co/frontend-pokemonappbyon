@@ -99,7 +99,7 @@ function Poke() {
           {pokemons.map((pokemon, index) => (
             <div
               key={index}
-              className="card bg-base-100 shadow-xl rounded-lg p-4"
+              className="card shadow-xl rounded-lg p-4"
             >
               <div className="card p-9 rounded-lg shadow-xl">
                 <img
@@ -109,7 +109,7 @@ function Poke() {
                 />
               </div>
               <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{pokemon.name}</h2>
+                <h2 className="text-xl font-semibold mb-2 text-black">{pokemon.name}</h2>
                 <div className="flex justify-between items-center mb-4">
                   <p className="text-gray-600">Price:</p>
                   <p className="text-gray-800">{pokemon.price}</p>
@@ -117,7 +117,7 @@ function Poke() {
                 <div className="flex justify-center">
                   <button
                     onClick={() => addPoke(pokemon)}
-                    className="btn rounded-full"
+                    className="btn rounded-full text-black"
                   >
                     Add Pokemon
                   </button>
