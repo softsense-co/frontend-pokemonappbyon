@@ -33,32 +33,30 @@ function MyPoke() {
     sehingga tidak perlu mencari key di localStorage. Selain itu, kode tersebut juga membuat salinan 
     array sebelum melakukan operasi penghapusan, sehingga tidak mengubah state langsung dan lebih aman untuk digunakan. */
 
-  const deletePokemon = (pokemon) => {
-    const confirmation = window.confirm("Sure you want to remove ?");
-
-    if (confirmation) {
-      // membuat salinan array
-      const updatedMyPokemon = [...myPoke];
-
-      // mencari index data yang akan dihapus
-      const index = updatedMyPokemon.findIndex((p) => p.id === pokemon.id);
-
-      //  kodnisi menghapus data dari array jika ditemukan
-      if (index !== -1) {
-        updatedMyPokemon.splice(index, 1);
-        //splice() adalah sebuah method built-in pada JavaScript array yang digunakan untuk menambah, menghapus, dan/atau mengganti elemen pada sebuah array. Method ini menerima dua parameter: index dan howMany, dimana index adalah posisi dari elemen yang ingin diubah dan howMany adalah jumlah elemen yang ingin diubah.
-        //mengubah array updatedMyPokemon dengan menghapus satu elemen dari array tersebut pada indeks yang ditentukan dengan nilai index
-        //elemen yang dihapus adalah elemen yang memiliki indeks yang sama dengan indeks dari pokemon yang ingin dihapus dari array.
-
-        // menyimpan array yang diperbarui ke local storage
-        localStorage.setItem("myPoke", JSON.stringify(updatedMyPokemon));
-
-        // memperbarui state dengan array yang diperbarui
-        setMyPoke(updatedMyPokemon);
-        alert("Pokemon Got Off!");
+    const deletePokemon = (pokemon) => {
+      const confirmation = window.confirm("Sure you want to remove ?");
+    
+      if (confirmation) {
+        // membuat salinan array
+        const updatedMyPokemon = [...myPoke];
+    
+        // mencari index data yang akan dihapus
+        const index = updatedMyPokemon.findIndex((p) => p.id === pokemon.id);
+    
+        // kondisi menghapus data dari array jika ditemukan
+        if (index !== -1) {
+          updatedMyPokemon.splice(index, 1);
+    
+          // menyimpan array yang diperbarui ke local storage dengan kunci yang sesuai
+          localStorage.setItem("myPokemonList", JSON.stringify(updatedMyPokemon));
+    
+          // memperbarui state dengan array yang diperbarui
+          setMyPoke(updatedMyPokemon);
+          alert("Pokemon Got Off!");
+        }
       }
-    }
-  };
+    };
+    
 
   return (
     <div className="container mx-auto">
