@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 function MyPoke() {
   const [myPoke, setMyPoke] = useState([]);
@@ -33,30 +34,39 @@ function MyPoke() {
     sehingga tidak perlu mencari key di localStorage. Selain itu, kode tersebut juga membuat salinan 
     array sebelum melakukan operasi penghapusan, sehingga tidak mengubah state langsung dan lebih aman untuk digunakan. */
 
-    const deletePokemon = (pokemon) => {
-      const confirmation = window.confirm("Sure you want to remove ?");
-    
-      if (confirmation) {
+  const deletePokemon = (pokemon) => {
+    Swal.fire({
+      title: "Confirmation",
+      text: "Sure you want to remove?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
         // membuat salinan array
         const updatedMyPokemon = [...myPoke];
-    
+  
         // mencari index data yang akan dihapus
         const index = updatedMyPokemon.findIndex((p) => p.id === pokemon.id);
-    
+  
         // kondisi menghapus data dari array jika ditemukan
         if (index !== -1) {
           updatedMyPokemon.splice(index, 1);
-    
+  
           // menyimpan array yang diperbarui ke local storage dengan kunci yang sesuai
           localStorage.setItem("myPokemonList", JSON.stringify(updatedMyPokemon));
-    
+  
           // memperbarui state dengan array yang diperbarui
           setMyPoke(updatedMyPokemon);
-          alert("Pokemon Got Off!");
+  
+          Swal.fire("Success", "Pokemon Got Off!", "success");
         }
       }
-    };
-    
+    });
+  };
 
   return (
     <div className="container mx-auto mt-9">
@@ -67,7 +77,7 @@ function MyPoke() {
         {myPoke.length > 0 &&
           myPoke.map((poke) => (
             <div className="flex justify-center" key={poke.id}>
-              <div className="card w-96 shadow-xl rounded-lg p-4">
+              <div className="card w-96 shadow-xl rounded-lg p-4 mb-10">
                 <div className="card p-9 rounded-lg shadow-xl">
                   <img
                     src={poke.image}
@@ -76,7 +86,9 @@ function MyPoke() {
                   />
                 </div>
                 <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2 text-black">{poke.name}</h2>
+                  <h2 className="text-xl font-semibold mb-2 text-black">
+                    {poke.name}
+                  </h2>
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-gray-600 ">Price:</p>
                     <p className="text-gray-800">{poke.price}</p>

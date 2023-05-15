@@ -1,4 +1,6 @@
 import React from "react";
+import Swal from 'sweetalert2';
+
 
 function Poke() {
   const pokemons = [
@@ -43,49 +45,75 @@ function Poke() {
       name: "Pokemon Wowo",
       image: require("../../img/17.webp"),
       price: "$45",
+      isNew: true,
     },
     {
       id: "8",
       name: "Pokemon Wewe",
       image: require("../../img/18.webp"),
       price: "$50",
+      isNew: true,
     },
     {
       id: "9",
       name: "Pokemon Wiwi",
       image: require("../../img/9.png"),
       price: "$45",
+      isNew: true,
     },
     {
       id: "10",
       name: "Pokemon Wawa",
       image: require("../../img/10.png"),
       price: "$50",
+      isNew: true,
     },
   ];
 
   function addPoke(pokemon) {
-    // Ambil data dari local storage (jika ada)
-    console.log("pokemon", pokemon);
-    let myPokemonList = JSON.parse(localStorage.getItem("myPokemonList")) || [];
-    const isDataExist = myPokemonList.find((p) => p.id === pokemon.id);
-    // const existingData = localStorage.getItem("myPokemon");
-    console.log("isDataExist", isDataExist);
-    // // Jika data tidak ditemukan, buat array kosong
-    // const myPokemon = existingData ? JSON.parse(existingData) : [];
-
-    if (isDataExist) {
-      alert("Pokemon Already Exist!");
-    } else {
-      // Tambahkan pokemon yang dipilih ke dalam array myPokemon
-      myPokemonList.push(pokemon);
-      localStorage.setItem("myPokemonList", JSON.stringify(myPokemonList));
-      // myPokemon.push(pokemon);
-      // // Simpan data ke local storage
-      // localStorage.setItem("myPokemon", JSON.stringify(myPokemon));
-      // Tampilkan pesan sukses
-      alert("Successfully to Added My Pokemon!");
-    }
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Sure you want to add this Pokemon?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        // Ambil data dari local storage (jika ada)
+        console.log("pokemon", pokemon);
+        let myPokemonList = JSON.parse(localStorage.getItem("myPokemonList")) || [];
+        const isDataExist = myPokemonList.find((p) => p.id === pokemon.id);
+  
+        if (isDataExist) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Pokemon Already Exist!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          // Tambahkan pokemon yang dipilih ke dalam array myPokemon
+          myPokemonList.push(pokemon);
+          localStorage.setItem("myPokemonList", JSON.stringify(myPokemonList));
+  
+          Swal.fire({
+            title: 'Success',
+            text: 'Successfully Added My Pokemon!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        }
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelled',
+          text: 'Adding Pokemon Cancelled!',
+          icon: 'info',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
   }
 
   return (
@@ -96,7 +124,12 @@ function Poke() {
       <div className="container mx-auto mt-9">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {pokemons.map((pokemon, index) => (
-            <div key={index} className="card shadow-xl rounded-lg p-4">
+            <div key={index} className="card shadow-xl rounded-lg p-4 mb-10">
+              {pokemon.isNew && (
+                <div className="bg-blue-400 text-black px-2 py-1 rounded-full absolute -top-2 -right-2">
+                  New
+                </div>
+              )}
               <div className="card p-9 rounded-lg shadow-xl">
                 <img
                   src={pokemon.image}
