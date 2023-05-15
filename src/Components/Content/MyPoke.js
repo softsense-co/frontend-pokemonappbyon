@@ -59,11 +59,11 @@ function MyPoke() {
     
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-4xl font-bold p-5 ml-5 text-center text-neutral-600">
+    <div className="container mx-auto mt-9">
+      <h1 className="text-5xl font-bold p-5 ml-5 text-center text-neutral-700">
         My Pokemon List
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 mt-9 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {myPoke.length > 0 &&
           myPoke.map((poke) => (
             <div className="flex justify-center" key={poke.id}>
