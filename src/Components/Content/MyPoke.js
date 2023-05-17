@@ -82,25 +82,28 @@ function MyPoke() {
                   <img
                     src={poke.image}
                     alt=""
-                    className="rounded-t-lg mt-2 mb-2 text-black"
+                    className="rounded-t-lg mt-2 mb-2 text-black w-[200px] h-[200px]"
                   />
                 </div>
                 <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2 text-black">
+                  <h2 className="text-xl font-semibold mb-2 text-black text-center">
                     {poke.name}
                   </h2>
-                  <div className="flex justify-between items-center mb-4">
+                  {/* <div className="flex justify-between items-center mb-4">
                     <p className="text-gray-600 ">Price:</p>
                     <p className="text-gray-800">{poke.price}</p>
-                  </div>
-                  <div className="flex justify-center">
-                    <button
-                      onClick={() => deletePokemon(poke)}
-                      className="btn rounded-full text-black"
-                    >
-                      Delete Pokemon
-                    </button>
-                  </div>
+                  </div> */}
+                  {/* <div className="flex justify-center mt-4"> */}
+                  <button
+                onClick={() => deletePokemon(poke)}
+                className="btn rounded text-black mt-2 w-full"
+              >
+                Delete Pokemon
+              </button>
+                  {/* <a href={`/detail/${poke.name}`} className="btn rounded text-black">
+                    see
+                  </a> */}
+                  {/* </div> */}
                 </div>
               </div>
             </div>

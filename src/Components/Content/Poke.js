@@ -76,13 +76,14 @@ function Poke() {
   useEffect(() => {
     async function fetchPokemons() {
       try {
-        const response = await axios.get("https://pokeapi.co/api/v2/pokemon");
+        const response = await axios.get('https://pokeapi.co/api/v2/pokemon');
         const pokemonList = response.data.results;
         const pokemonData = [];
 
         for (const pokemon of pokemonList) {
           const pokemonResponse = await axios.get(pokemon.url);
-          const pokemonImage = pokemonResponse.data.sprites.front_default;
+          const pokemonImage =
+            pokemonResponse.data.sprites.other.dream_world.front_default;
 
           pokemonData.push({
             name: pokemon.name,
@@ -164,24 +165,27 @@ function Poke() {
                 <img
                   src={pokemon.image}
                   alt=""
-                  className="rounded-t-lg mt-2 mb-2"
+                  className="rounded-t-lg mt-4 w-[200px] h-[200px]"
                 />
               </div>
               <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2 text-black">
+                <h2 className="text-xl font-semibold mb-2 text-black text-center">
                   {pokemon.name}
                 </h2>
                 {/* <div className="flex justify-between items-center mb-4">
                   <p className="text-gray-600">Price:</p>
                   <p className="text-gray-800">{pokemon.price}</p>
                 </div> */}
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-4">
                   <button
                     onClick={() => addPoke(pokemon)}
-                    className="btn rounded-full text-black"
+                    className="btn rounded text-black mr-16"
                   >
-                    Add Pokemon
+                    +
                   </button>
+                  <a href={`/detail/${pokemon.name}`} className="btn rounded text-black">
+                    detail
+                  </a>
                 </div>
               </div>
             </div>
