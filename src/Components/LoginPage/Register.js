@@ -75,7 +75,7 @@ export default function Register() {
               />
             </div>
             <div className="form-control mt-6">
-              <button className="btn btn-primary text-black" type="submit">
+              <button className="btn" type="submit">
                 Sign Up
               </button>
             </div>

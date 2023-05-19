@@ -77,8 +77,8 @@ function HLogin() {
               Forgot Password
             </a>
             <div className="form-control mt-6">
-              <button className="btn btn-primary text-black" type="submit">
-                Login
+              <button className="btn" type="submit">
+                Sign In
               </button>
             </div>
             <p className="mt-5 text-center text-sm text-gray-500">
