@@ -4,7 +4,7 @@
 
 
 body {
-    background: linear-gradient(79deg, #0EA293, #B9EDDD , #0EA293);
+    background: linear-gradient(79deg, #5C469C, #19A7CE , #5C469C);
 }
 
 h1, h4, p,
@@ -22,14 +22,14 @@ ul {
     font-size: 1rem;
     text-transform: uppercase;
     background: transparent;
-    color: #A4BC92(151, 3, 3);
+    color: black;
     border: 1px solid black;
     font-weight: 500;
     cursor: pointer;
-    background-color: #A4BC92;
+    background-color: #AEE2FF;
     transition: color 0.3s ease;
 }
 
 .btn:hover {
-    color: #D6E8DB;
+    color: #19A7CE;
 }
