@@ -15,7 +15,7 @@ const Hero = () => {
 
   const onPressListPokemonsIsUserLoggedIn = () => {
     if (isUserLoggedIn) {
-      navigate("/listpokemons");
+      navigate("/");
     } else {
       MySwal.fire({
         title: "Access Denied",
@@ -27,7 +27,7 @@ const Hero = () => {
 
   const onPressMyPokemonsIsUserLoggedIn = () => {
     if (isUserLoggedIn) {
-      navigate("/mypokemons");
+      navigate("/");
     } else {
       MySwal.fire({
         title: "Access Denied",

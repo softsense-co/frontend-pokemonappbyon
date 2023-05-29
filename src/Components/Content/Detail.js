@@ -45,55 +45,68 @@ function addPoke(pokemon) {
 
 function Detail() {
   const { name } = useParams();
-  // console.log("name", name)
-  //   console.log("id" , id)
   const [pokemons, setPokemon] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const getPokemonDetail = async () => {
+      try {
+        // Mengambil data pokemon
+        const pokemonResponse = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${name}`
+        );
+        const pokemonData = pokemonResponse.data;
+
+        // Mendapatkan ability dari pokemon
+        const abilityUrls = pokemonData.abilities.map(
+          (ability) => ability.ability.url
+        );
+        const abilityResponses = await Promise.all(
+          abilityUrls.map((url) => axios.get(url))
+        );
+        const abilities = abilityResponses.map((response) => response.data);
+
+        const pokemonImage =
+          pokemonResponse.data.sprites.other.dream_world.front_default;
+        const pokemonWeight = pokemonData.weight;
+        const pokemonHeight = pokemonData.height;
+        const pokemonMove = pokemonData.moves.map((move) => move.move.name);
+
+        // Mengupdate state pokemon
+        setPokemon({
+          name: pokemonData.name,
+          abilities: abilities,
+          image: pokemonImage,
+          weight: pokemonWeight,
+          height: pokemonHeight,
+          moves: pokemonMove,
+          // Tambahkan data lain yang Anda inginkan
+        });
+
+        setIsLoading(false); // Menandakan loading telah selesai
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getPokemonDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [name]);
 
-  const getPokemonDetail = async () => {
-    try {
-      // Mengambil data pokemon
-      const pokemonResponse = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${name}`
-      );
-      const pokemonData = pokemonResponse.data;
-
-      // Mendapatkan ability dari pokemon
-      const abilityUrls = pokemonData.abilities.map(
-        (ability) => ability.ability.url
-      );
-      const abilityResponses = await Promise.all(
-        abilityUrls.map((url) => axios.get(url))
-      );
-      const abilities = abilityResponses.map((response) => response.data);
-
-      const pokemonImage =
-        pokemonResponse.data.sprites.other.dream_world.front_default;
-      const pokemonWeight = pokemonData.weight;
-      const pokemonHeight = pokemonData.height;
-      const pokemonMove = pokemonData.moves.map((move) => move.move.name);
-
-      // Mengupdate state pokemon
-      setPokemon({
-        name: pokemonData.name,
-        abilities: abilities,
-        image: pokemonImage,
-        weight: pokemonWeight,
-        height: pokemonHeight,
-        moves: pokemonMove,
-        // Tambahkan data lain yang Anda inginkan
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (isLoading) {
+    Swal.fire({
+      title: "Loading...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+  } else {
+    Swal.close();
+  }
 
   if (!pokemons) {
-    return <div className="text-black">Loading...</div>;
+    return <div className="text-black"></div>;
   }
 
   return (
