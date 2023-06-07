@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontendbyon-deployment
+  namespace: development
+  labels:
+    app: frontendbyon
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontendbyon
+  template:
+    metadata:
+      labels:
+        app: frontendbyon
+    spec:
+      containers:
+      - name: frontendbyon
+        image: enofitriyanti11/frontendbyon:_TAG_
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontendbyon-service
+  namespace: development
+spec:
+  selector:
+    app: frontendbyon
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP
+
