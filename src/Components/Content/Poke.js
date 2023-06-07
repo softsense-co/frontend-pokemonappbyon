@@ -12,7 +12,6 @@ function Poke() {
         setIsLoading(true);
 
         // const response = await axios.get('http://pokeapi.co/api/v2/pokemon');
-        // const response = await axios.get('https://expressjs-backend.up.railway.app/pokemons');
         const getAuthToken = localStorage.getItem("authToken");
         const config = {
           headers: {
