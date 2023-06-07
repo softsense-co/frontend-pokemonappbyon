@@ -18,7 +18,7 @@ function App() {
         <Route path="/about" element={isLoggedIn() ? <About /> : <Navigate to="/" />} />
         <Route path="/login" element={isLoggedIn() ? <Navigate to="/" /> : <Login />} />
         <Route path="/register" element={<Regist />} />
-        <Route path="/detail/:name" element={<DetailPoke />} />
+        <Route path="/detail/:id" element={<DetailPoke />} />
       </Routes>
     </BrowserRouter>
   );

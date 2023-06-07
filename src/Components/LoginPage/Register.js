@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
@@ -12,7 +13,8 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://reqres.in/api/register", {
+      const response = await axios.post("http://localhost:4000/auth/register", {
+        name: name,
         email: email,
         password: password,
       });
@@ -33,19 +35,36 @@ export default function Register() {
   }
 
   return (
-    <div className="hero min-h-full flex flex-col justify-center  px-6 py-12 lg:px-8 ">
+    <div
+      className="hero min-h-full flex flex-col justify-center px-6 py-12 lg:px-8"
+      style={{ backgroundImage: 'url("../../img/bg3.png")' }}
+    >
       <img
         className="mx-auto h-20 w-auto"
         src="../../img/logo.png"
         alt="Your Company"
       />
       <h1 className="text-5xl font-bold mb-4">Poke Register !!</h1>
-      <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl mb-16 mt-5">
+      <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl mb-16 mt-5" style={{ background: 'linear-gradient(to right, #98EECC, #2CD3E1)' }}>
         <div className="card-body">
           <p className="text-xl mb-6 text-center font-bold">
             Pokemon Need To Register
           </p>
           <form onSubmit={handleSubmit}>
+          <div className="form-control">
+              <label className="label">
+                <span className="label-text text-black">Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="name"
+                className="input input-bordered input-ghost text-black"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                id="name"
+                name="name"
+              />
+            </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text text-black">Email</span>

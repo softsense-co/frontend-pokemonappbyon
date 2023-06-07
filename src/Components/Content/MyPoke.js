@@ -1,13 +1,27 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 function MyPoke() {
   const [myPoke, setMyPoke] = useState([]);
 
-  const getMyPokemons = () => {
-    const savedData = JSON.parse(localStorage.getItem("myPokemonList")) || [];
-    if (savedData) {
-      setMyPoke(savedData);
+  const getMyPokemons = async () => {
+    try {
+      const getAuthToken = localStorage.getItem("authToken");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getAuthToken}`, // Sertakan token autentikasi dalam header permintaan
+        },
+      };
+      const response = await axios.get(
+        `http://localhost:4000/pokemons/collection/`,
+        config
+      );
+      console.log("response", response.data);
+      const mypokemonList = response.data.data;
+      setMyPoke(mypokemonList);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -21,8 +35,11 @@ function MyPoke() {
   //fungsi delete local storage yg simple dan diambil berdasarkan id  dan memiliki kelemahan
   // karna parameters "id" yang di set sedangkan pada local storage itu menggunakan key mypokemons
   //sehingga dia perlu mencari key yang sesuai di mypokemons
-  // Fungsi filter digunakan untuk membuat array baru dengan semua elemen yang memenuhi kondisi yang diberikan. Dalam hal ini, kondisinya adalah bahwa id dari setiap pokemon yang diproses dalam loop (p.id) tidak sama dengan id pokemon yang ingin dihapus (pokemon.id).
-  //Dengan menghapus pokemon dari array updatedMyPokemon, dan kemudian mengubah nilai state myPokemon menjadi array yang baru, kita dapat menghapus pokemon dari tampilan halaman.
+  // Fungsi filter digunakan untuk membuat array baru dengan semua elemen yang memenuhi kondisi yang diberikan.
+  //  Dalam hal ini, kondisinya adalah bahwa id dari setiap pokemon yang diproses dalam loop (p.id) tidak sama dengan
+  // id pokemon yang ingin dihapus (pokemon.id).
+  //Dengan menghapus pokemon dari array updatedMyPokemon, dan kemudian mengubah nilai state myPokemon menjadi array yang
+  // baru, kita dapat menghapus pokemon dari tampilan halaman.
 
   /* const deletePokemon = (id) => {
         const updatedPokemons = myPokemon.filter(pokemon => pokemon.id !== id);
@@ -34,39 +51,35 @@ function MyPoke() {
     sehingga tidak perlu mencari key di localStorage. Selain itu, kode tersebut juga membuat salinan 
     array sebelum melakukan operasi penghapusan, sehingga tidak mengubah state langsung dan lebih aman untuk digunakan. */
 
-  const deletePokemon = (pokemon) => {
-    Swal.fire({
-      title: "Confirmation",
-      text: "Sure you want to remove?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // membuat salinan array
-        const updatedMyPokemon = [...myPoke];
-  
-        // mencari index data yang akan dihapus
-        const index = updatedMyPokemon.findIndex((p) => p.id === pokemon.id);
-  
-        // kondisi menghapus data dari array jika ditemukan
-        if (index !== -1) {
-          updatedMyPokemon.splice(index, 1);
-  
-          // menyimpan array yang diperbarui ke local storage dengan kunci yang sesuai
-          localStorage.setItem("myPokemonList", JSON.stringify(updatedMyPokemon));
-  
-          // memperbarui state dengan array yang diperbarui
-          setMyPoke(updatedMyPokemon);
-  
-          Swal.fire("Success", "Pokemon Got Off!", "success");
-        }
+  const deletePokemon = async (id) => {
+    try {
+      console.log("test id", id);
+      const response = await Swal.fire({
+        title: "Are you sure?",
+        text: "You will not be able to recover this Pokemon!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, keep it",
+      });
+
+      console.log("response", response.data);
+
+      if (response.isConfirmed) {
+        await axios.delete(`http://localhost:4000/pokemons/collection/${id}`);
+        Swal.fire("Deleted!", "Your Pokemon has been deleted.", "success");
+
+        const updatedMyPokemons = myPoke.filter(poke => poke.id !== id);
+        setMyPoke(updatedMyPokemons);
+      } else {
+        Swal.fire("Cancelled", "Your Pokemon is safe!", "info");
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+
 
   return (
     <div className="container mx-auto mt-9">
@@ -89,17 +102,12 @@ function MyPoke() {
                   <h2 className="text-xl font-semibold mb-2 text-black text-center">
                     {poke.name}
                   </h2>
-                  {/* <div className="flex justify-between items-center mb-4">
-                    <p className="text-gray-600 ">Price:</p>
-                    <p className="text-gray-800">{poke.price}</p>
-                  </div> */}
-                  {/* <div className="flex justify-center mt-4"> */}
                   <button
-                onClick={() => deletePokemon(poke)}
-                className="btn rounded text-black mt-2 w-full"
-              >
-                Delete Pokemon
-              </button>
+                    onClick={() => deletePokemon(poke.id)}
+                    className="btn rounded text-black mt-2 w-full"
+                  >
+                    Delete Pokemon
+                  </button>
                   {/* <a href={`/detail/${poke.name}`} className="btn rounded text-black">
                     see
                   </a> */}

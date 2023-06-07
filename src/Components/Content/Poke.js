@@ -11,22 +11,22 @@ function Poke() {
       try {
         setIsLoading(true);
 
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon');
-        const pokemonList = response.data.results;
-        const pokemonData = [];
+        // const response = await axios.get('http://pokeapi.co/api/v2/pokemon');
+        // const response = await axios.get('https://expressjs-backend.up.railway.app/pokemons');
+        const getAuthToken = localStorage.getItem("authToken");
+        const config = {
+          headers: {
+            Authorization: `Bearer ${getAuthToken}`, // Sertakan token autentikasi dalam header permintaan
+          },
+        };
+        const response = await axios.get(
+          "http://localhost:4000/pokemons",
+          config
+        );
+        console.log(response.data, "<=== response data");
+        const pokemonList = response.data.data;
 
-        for (const pokemon of pokemonList) {
-          const pokemonResponse = await axios.get(pokemon.url);
-          const pokemonImage =
-            pokemonResponse.data.sprites.other.dream_world.front_default;
-
-          pokemonData.push({
-            name: pokemon.name,
-            image: pokemonImage,
-          });
-        }
-
-        setPokemons(pokemonData);
+        setPokemons(pokemonList);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -37,59 +37,67 @@ function Poke() {
     fetchPokemons();
   }, []);
 
-  function addPoke(pokemon) {
-    Swal.fire({
-      title: "Confirmation",
-      text: "Sure you want to add this Pokemon?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      reverseButtons: true,
-    }).then((result) => {
-      if (result.value) {
-        let myPokemonList =
-          JSON.parse(localStorage.getItem("myPokemonList")) || [];
-        const isDataExist = myPokemonList.find((p) => p.name === pokemon.name);
-
-        if (isDataExist) {
-          Swal.fire({
-            title: "Error",
-            text: "Pokemon Already Exist!",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        } else {
-          myPokemonList.push(pokemon);
-          localStorage.setItem("myPokemonList", JSON.stringify(myPokemonList));
-
-          Swal.fire({
-            title: "Success",
-            text: "Successfully Added My Pokemon!",
-            icon: "success",
-            confirmButtonText: "OK",
-          });
+  const addPoke = async (pokemon) => {
+    try {
+      const getLocalStorageToken = localStorage.getItem("authToken");
+      console.log(getLocalStorageToken, "token");
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getLocalStorageToken}`,
+        },
+      };
+  
+      const bodyParameters = {
+        id_pokemons: pokemon.id,
+      };
+  
+      const existingDataDb = await axios.get(
+        "http://localhost:4000/pokemons/collection",
+        {
+          headers: {
+            Authorization: `Bearer ${getLocalStorageToken}`,
+          },
+          params: {
+            id_pokemons: pokemon.id,
+          },
         }
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
+      );
+      console.log(existingDataDb, "existingdata");
+  
+      if (existingDataDb.data.data.find((data) => data.pokemons_id === pokemon.id)) {
         Swal.fire({
-          title: "Cancelled",
-          text: "Adding Pokemon Cancelled!",
-          icon: "info",
-          confirmButtonText: "OK",
+          title: "Error",
+          text: "Pokemon already exists",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
         });
+        return;
       }
-    });
-  }
+  
+      const response = await axios.post(
+        "http://localhost:4000/pokemons/collection",
+        bodyParameters,
+        config
+      );
+      Swal.fire("Success", "Pokemon Added", "success");
+      console.log("Data berhasil ditambahkan ke database:", response.data);
+    } catch (error) {
+      console.log("Gagal menambahkan data ke database:", error.message);
+    }
+  };
+  
 
   useEffect(() => {
     if (isLoading) {
       Swal.fire({
-        title: 'Loading...',
+        title: "Loading...",
         allowOutsideClick: false,
         showConfirmButton: false,
         didOpen: () => {
           Swal.showLoading();
-        }
+        },
       });
     } else {
       Swal.close();
@@ -108,7 +116,10 @@ function Poke() {
           <div className="container mx-auto mt-9">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {pokemons.map((pokemon, index) => (
-                <div key={index} className="card shadow-xl rounded-lg p-4 mb-10">
+                <div
+                  key={index}
+                  className="card shadow-xl rounded-lg p-4 mb-10"
+                >
                   {pokemon.isNew && (
                     <div className="bg-blue-400 text-black px-2 py-1 rounded-full absolute -top-2 -right-2">
                       New
@@ -132,7 +143,10 @@ function Poke() {
                       >
                         +
                       </button>
-                      <a href={`/detail/${pokemon.name}`} className="btn rounded text-black">
+                      <a
+                        href={`/detail/${pokemon.id}`}
+                        className="btn rounded text-black"
+                      >
                         detail
                       </a>
                     </div>

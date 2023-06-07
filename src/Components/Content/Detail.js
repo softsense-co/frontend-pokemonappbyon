@@ -3,85 +3,65 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-function addPoke(pokemon) {
-  Swal.fire({
-    title: "Confirmation",
-    text: "Sure you want to add this Pokemon?",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-    cancelButtonText: "No",
-    reverseButtons: true,
-  }).then((result) => {
-    if (result.value) {
-      // Ambil data dari local storage (jika ada)
-      console.log("pokemon", pokemon);
-      let myPokemonList =
-        JSON.parse(localStorage.getItem("myPokemonList")) || [];
-      const isDataExist = myPokemonList.find((p) => p.name === pokemon.name);
+const addPoke = async (pokemon) => {
+  try {
+    const getLocalStorageToken = localStorage.getItem("authToken");
+    console.log(getLocalStorageToken, "token");
 
-      if (isDataExist) {
-        Swal.fire({
-          title: "Error",
-          text: "Pokemon Already Exist!",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        // Tambahkan pokemon yang dipilih ke dalam array myPokemon
-        myPokemonList.push(pokemon);
-        localStorage.setItem("myPokemonList", JSON.stringify(myPokemonList));
+    const config = {
+      headers: {
+        Authorization: `Bearer ${getLocalStorageToken}`,
+      },
+    };
 
-        Swal.fire({
-          title: "Success",
-          text: "Successfully Added My Pokemon!",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-      }
+    const bodyParameters = {
+      id_pokemons: pokemon.id,
+    };
+
+    const existingDataDb = await axios.get('http://localhost:4000/pokemons/collection', {
+      headers: {
+        Authorization: `Bearer ${getLocalStorageToken}`
+      },  
+      params: {
+        id_pokemons: pokemon.id,
+       },
+    });
+    console.log(existingDataDb, "existingdata");
+
+    if (
+      existingDataDb.data.data.find((data) => data.pokemons_id === pokemon.id)
+    ) {
+      Swal.fire("Error", "Pokemon already exists", "error");
+      return;
     }
-  });
-}
+
+    const response = await axios.post(
+      "http://localhost:4000/pokemons/collection", bodyParameters, config
+    );
+    Swal.fire("Success", "Pokemon Added", "success");
+    console.log("Data berhasil ditambahkan ke database:", response.data);
+  } catch (error) {
+    console.log("Gagal menambahkan data ke database:", error.message);
+  }
+};
 
 function Detail() {
-  const { name } = useParams();
+  const { id } = useParams();
+  console.log("id params: ", id);
   const [pokemons, setPokemon] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getPokemonDetail = async () => {
       try {
-        // Mengambil data pokemon
         const pokemonResponse = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/${name}`
+          `http://localhost:4000/pokemons/${id}`
         );
-        const pokemonData = pokemonResponse.data;
+        console.log(pokemonResponse,'pokemon response');
 
-        // Mendapatkan ability dari pokemon
-        const abilityUrls = pokemonData.abilities.map(
-          (ability) => ability.ability.url
-        );
-        const abilityResponses = await Promise.all(
-          abilityUrls.map((url) => axios.get(url))
-        );
-        const abilities = abilityResponses.map((response) => response.data);
-
-        const pokemonImage =
-          pokemonResponse.data.sprites.other.dream_world.front_default;
-        const pokemonWeight = pokemonData.weight;
-        const pokemonHeight = pokemonData.height;
-        const pokemonMove = pokemonData.moves.map((move) => move.move.name);
-
-        // Mengupdate state pokemon
-        setPokemon({
-          name: pokemonData.name,
-          abilities: abilities,
-          image: pokemonImage,
-          weight: pokemonWeight,
-          height: pokemonHeight,
-          moves: pokemonMove,
-          // Tambahkan data lain yang Anda inginkan
-        });
+        const pokemonData = pokemonResponse.data.data;
+        console.log(pokemonData, "pokemon data : ");
+        setPokemon(pokemonData);
 
         setIsLoading(false); // Menandakan loading telah selesai
       } catch (error) {
@@ -90,7 +70,8 @@ function Detail() {
     };
 
     getPokemonDetail();
-  }, [name]);
+    // eslint-disable-next-line
+  }, []);
 
   if (isLoading) {
     Swal.fire({
@@ -115,44 +96,47 @@ function Detail() {
         Pokemon Wowo
       </h1>
       <div className="flex justify-center mt-4">
-        <div className="card w-auto shadow-xl rounded-lg p-4 mb-80">
-          <div className="flex">
-            <div className="">
-              <div className="card p-9 rounded-lg shadow-xl">
-                <img src={pokemons.image} alt={pokemons.name} className="" />
-                <h2 className="text-lg font-bold text-center text-black mt-4">
-                  {pokemons.name}
-                </h2>
-              </div>
-              <div className="flex justify-center items-center mt-4">
-                <button
-                  className="btn rounded text-black"
-                  onClick={() => addPoke(pokemons)}
-                >
-                  Add Pokemon
-                </button>
-              </div>
-            </div>
-            <div className="w-1/2">
-              <div className="mt-4 ml-5">
-                <div className="mb-4">
-                  <span className="text-gray-700 font-bold">Weight:</span>
-                  <span className="text-gray-600 ml-2">{pokemons.weight}</span>
+        {pokemons.map((pokemon, index) => (
+          <div
+            key={index}
+            className="card w-auto shadow-xl rounded-lg p-4 mb-80"
+          >
+            <div className="flex">
+              <div className="">
+                <div className="card p-9 rounded-lg shadow-xl">
+                  <img src={pokemon.image} alt={pokemon.name} className="" />
+                  <h2 className="text-lg font-bold text-center text-black mt-4">
+                    {pokemon.name}
+                  </h2>
                 </div>
-                <div className="mb-4">
-                  <span className="text-gray-700 font-bold">Height:</span>
-                  <span className="text-gray-600 ml-2">{pokemons.height}</span>
+                <div className="flex justify-center items-center mt-4">
+                  <button
+                    className="btn rounded text-black"
+                    onClick={() => addPoke(pokemon)}
+                  >
+                    Add Pokemon
+                  </button>
                 </div>
-                <div>
-                  <span className="text-gray-700 font-bold">Moves:</span>
-                  <span className="text-gray-600 ml-2">
-                    {pokemons.moves.join(", ")}
-                  </span>
+              </div>
+              <div className="w-1/2">
+                <div className="mt-4 ml-5">
+                  <div className="mb-4">
+                    <span className="text-gray-700 font-bold">Name:</span>
+                    <span className="text-gray-600 ml-2">{pokemon.name}</span>
+                  </div>
+                  {/* <div className="mb-4">
+                <span className="text-gray-700 font-bold">Height:</span>
+                <span className="text-gray-600 ml-2">{pokemons.height}</span>
+              </div> */}
+                  <div>
+                    <span className="text-gray-700 font-bold">Moves:</span>
+                    <span className="text-gray-600 ml-2">{pokemon.moves}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -17,28 +17,38 @@ function HLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("https://reqres.in/api/login", { email, password })
+      .post("http://localhost:4000/auth/login", { email, password })
       .then((response) => {
-        localStorage.setItem("authToken", true);
+        const token = response.data.token;
+        console.log("token ", response.data.token);
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("idUser", response.data.id);
         Swal.fire("Success", "Login successful!", "success").then(() => {
           window.location.href = "/";
         });
       })
       .catch((error) => {
         console.log(error);
+        Swal.fire("Error", "Login failed!", "error");
       });
   };
 
   return (
-    <div className="hero min-h-full flex flex-col justify-center px-6 py-12 lg:px-8">
+    <div
+      className="hero min-h-full flex flex-col justify-center px-6 py-12 lg:px-8"
+      style={{ backgroundImage: `url('../../img/bg3.png')` }}
+    >
       <img
         className="mx-auto h-20 w-auto"
         src="../../img/logo.png"
         alt="Your Company"
       />
-      <h1 className="text-5xl font-bold mb-4">Login now!</h1>
+      <h1 className="text-5xl font-bold mb-4">Login Now!</h1>
       <p className="text-base mb-6">Pokemon Need To Login</p>
-      <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl mb-16">
+      <div
+        className="card flex-shrink-0 w-full max-w-sm shadow-2xl mb-16 text-black"
+        style={{ background: "linear-gradient(to left, #98EECC, #2CD3E1)" }}
+      >
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="form-control">

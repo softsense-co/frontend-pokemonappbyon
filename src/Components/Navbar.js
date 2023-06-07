@@ -5,11 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { isLoggedIn } from "../Components/LoginPage/auth";
 import { logout } from "../Components/LoginPage/Logout";
 import Swal from "sweetalert2";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar = () => {
+
+  const [click, setClick] = useState(false);
+  const handleClick = () => setClick(!click);
+
   const [color, setColor] = useState(false);
   const changeColor = () => {
-    if (window.scrollY >= 100) {
+    if (window.scrollY >= 10) {
       setColor(true);
     } else {
       setColor(false);
@@ -110,6 +115,13 @@ const Navbar = () => {
           </Link>
         </li>
       </ul>
+      <div className="menu" onClick={handleClick}>
+        {click ? (
+          <FaTimes size={20} style={{ color: "black" }} />
+        ) : (
+          <FaBars size={20} style={{ color: "black" }} />
+        )}
+      </div>
     </div>
   );
 };

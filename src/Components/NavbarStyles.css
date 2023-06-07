@@ -25,9 +25,9 @@
 
 .nav-menu {
     display: flex;
-    align-items: center;
+    /* align-items: center;
     align-content: center;
-    justify-content: space-around;
+    justify-content: space-around; */
 }
 
 .nav-menu li {
@@ -39,6 +39,10 @@
 .nav-menu li a{
     font-size: 1.2rem;
     font-weight: 500;
+}
+
+.menu{
+    display: none;
 }
 
 
@@ -69,7 +73,7 @@
         font-size: 2rem;
     }
 
-    /* .poke {
+    .menu {
         display: initial;
-    } */
+    }
 }
